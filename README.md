@@ -16,3 +16,5 @@ To measure the value of a capacitor (e.g. in the case above between pin D7 and A
 ````cpp
 float val = cap1.Measure()
 ````
+Returns the capacitance in picofarads, in this case in the variable ````val````.<br/>
+(note that 1nF = 1000pF and 1uF = 1000000pF)
