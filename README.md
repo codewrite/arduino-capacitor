@@ -19,6 +19,10 @@ float val = cap1.Measure()
 Returns the capacitance in picofarads, in this case in the variable ````val````.<br/>
 (note that 1nF = 1000pF and 1uF = 1000000pF)
 
+What's New?
+======
+Version 1.1.0 introduces the `CapacitorLite` class. This uses much less program space and guarantees a fast measurement. It only measures up to 655pF - any capacitors above this will return 65535 from the `Measure()` method. See the example code [here](examples/MeasureCapacitorLite/MeasureCapacitorLite.ino).
+
 <hr/>
 
 I originally came up with this idea back in 2014. For some explanation of how it works please have a look at these links: 

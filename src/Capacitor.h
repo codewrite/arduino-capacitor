@@ -19,8 +19,11 @@ class Capacitor
     void Calibrate(float strayCap, float pullupRes);
     float Measure();                // returns the capacitance in pF
     void ShowDebug(bool on);        // true to show debug messages 
+#if defined(__SAM3X8E__)
+    void SetResolution(int bits);
+#endif
   private:
-    const int _maxAdcValue = 1023;
+    int _maxAdcValue = 1023;
     static float _inCapToGnd;       // in pF
     static float _rPullup;          // in k ohms
     int _outPin;                    // For electrolytic capatitors, connect to positive end
