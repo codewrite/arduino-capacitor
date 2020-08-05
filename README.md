@@ -21,12 +21,13 @@ Returns the capacitance in picofarads, in this case in the variable ````val````.
 
 What's New?
 ======
-Version 1.1.0 introduces the `CapacitorLite` class. This uses much less program space and guarantees a fast measurement. It only measures up to 655pF - any capacitors above this will return 65535 from the `Measure()` method. See the example code [here](examples/MeasureCapacitorLite/MeasureCapacitorLite.ino).
+Version 1.1.0 introduces the `CapacitorLite` class. This uses much less program space* and guarantees a fast measurement. It only measures up to 655pF - any capacitors above this will return 65535 from the `Measure()` method. See the example code [here](examples/MeasureCapacitorLite/MeasureCapacitorLite.ino).
 
+\* Capacitor uses about 3.5K of program space and 19 bytes of dynamic memory, CapacitorLite uses less than 1K of program space and 7 bytes of dynamic memory.
 <hr/>
 
 I originally came up with this idea back in 2014. For some explanation of how it works please have a look at these links: 
 https://hackaday.com/2014/01/22/capacitance-measurement-with-the-arduino-uno/#more-113173 
 http://wordpress.codewrite.co.uk/pic/2014/01/21/cap-meter-with-arduino-uno/ 
 http://wordpress.codewrite.co.uk/pic/2014/01/25/capacitance-meter-mk-ii/ <br/>
-When I get a chance I'll update the Wiki with some of the above information and some oscilloscope screen shots...
+For more information about how to use the code and how it works, please see the [WiKi](wiki).
