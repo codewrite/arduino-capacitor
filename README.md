@@ -30,4 +30,4 @@ I originally came up with this idea back in 2014. For some explanation of how it
 https://hackaday.com/2014/01/22/capacitance-measurement-with-the-arduino-uno/#more-113173 
 http://wordpress.codewrite.co.uk/pic/2014/01/21/cap-meter-with-arduino-uno/ 
 http://wordpress.codewrite.co.uk/pic/2014/01/25/capacitance-meter-mk-ii/ <br/>
-For more information about how to use the code and how it works, please see the [WiKi](wiki).
+For more information about how to use the code and how it works, please see the [WiKi](../../wiki).
