@@ -19,6 +19,8 @@
     #define STRAY_CAP (2630);
 #elif defined(__AVR_ATmega32U4__)
     #define STRAY_CAP (3600);
+#elif defined(__AVR_ATtinyX5__)
+    #define STRAY_CAP (1900);
 #else
     #define STRAY_CAP (2448);
 #endif
@@ -65,7 +67,19 @@ unsigned int CapacitorLite::Measure()
 
     pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
     digitalWrite(_outPin, HIGH);
-    int val = analogRead(_inPin);
+#if defined(__AVR_ATtinyX5__)
+    int val = 0;
+    switch(_inPin)
+	{
+		case 2: val = analogRead(1); break;
+		case 3: val = analogRead(3); break;
+		case 4: val = analogRead(2); break;
+		case 5: val = analogRead(0); break;
+		default: analogRead(_inPin);
+	}
+#else
+	int val = analogRead(_inPin);
+#endif
     digitalWrite(_outPin, LOW);
     pinMode(_inPin, OUTPUT);                // Clear everything for next measurement
 

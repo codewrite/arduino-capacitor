@@ -23,6 +23,9 @@
 #elif defined(__AVR_ATmega32U4__)
     #define STRAY_CAP (36.00);
     #define R_PULLUP (34.80);
+#elif defined(__AVR_ATtinyX5__)
+    #define STRAY_CAP (19.00);
+    #define R_PULLUP (35.60);
 #else
     #define STRAY_CAP (24.48);
     #define R_PULLUP (34.80);
@@ -70,10 +73,26 @@ void Capacitor::SetResolution(int bits)
 float Capacitor::Measure()
 {
     float capacitance;
+	
+#if defined(__AVR_ATtinyX5__)
+    int tinyPin;
+    switch(_inPin)
+	{
+		case 2: tinyPin = 1; break;
+		case 3: tinyPin = 3; break;
+		case 4: tinyPin = 2; break;
+		case 5: tinyPin = 0; break;
+		default: tinyPin = _inPin;
+	}
+#endif
 
     pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
     digitalWrite(_outPin, HIGH);
-    int val = analogRead(_inPin);
+#if defined(__AVR_ATtinyX5__)
+	int val = analogRead(tinyPin);
+#else
+	int val = analogRead(_inPin);
+#endif
     digitalWrite(_outPin, LOW);
     pinMode(_inPin, OUTPUT);                // Clear everything for next measurement
 
@@ -101,7 +120,12 @@ float Capacitor::Measure()
         unsigned long u2 = micros();        // Note: overflows approx every 70 mins
         digitalWrite(_outPin, HIGH);        // Pull both sides of capacitor up
         pinMode(_outPin, OUTPUT);
-        int adcVal = analogRead(_inPin);    // Now read level capacitor has charged up to
+
+#if defined(__AVR_ATtinyX5__)
+	    int adcVal = analogRead(tinyPin);    // Now read level capacitor has charged up to
+#else
+	    int adcVal = analogRead(_inPin);    // Now read level capacitor has charged up to
+#endif
         val = _maxAdcValue - adcVal;
 
         unsigned long u3 = 0;
@@ -117,7 +141,12 @@ float Capacitor::Measure()
             u4 = micros();
             digitalWrite(_outPin, HIGH);    // Pull both sides of capacitor up
             pinMode(_outPin, OUTPUT);
-            adcVal = analogRead(_inPin);
+            
+#if defined(__AVR_ATtinyX5__)
+	        adcVal = analogRead(tinyPin);
+#else
+	        adcVal = analogRead(_inPin);
+#endif
             val = _maxAdcValue - adcVal;    // Measure level wrt Vcc (not Gnd)
 
             while (adcVal < _maxAdcValue - _maxAdcValue / 8)
@@ -125,7 +154,11 @@ float Capacitor::Measure()
                 pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly to about 0.6V
                 delay(5);
                 pinMode(_inPin, INPUT);
-                adcVal = analogRead(_inPin);
+#if defined(__AVR_ATtinyX5__)
+	            adcVal = analogRead(tinyPin);
+#else
+	            adcVal = analogRead(_inPin);
+#endif
             }
         }
         else
