@@ -75,7 +75,7 @@ float Capacitor::Measure()
     float capacitance;
 	
 #if defined(__AVR_ATtinyX5__)
-    pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Rising high edge on OUT_PIN
+    pinMode(analogInputToDigitalPin(_inPin-A0), INPUT);  // Rising high edge on OUT_PIN
 #else
     pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
 #endif
@@ -85,7 +85,7 @@ float Capacitor::Measure()
 
     digitalWrite(_outPin, LOW);
 #if defined(__AVR_ATtinyX5__)
-    pinMode(analogInputToDigitalPin(_inPin), OUTPUT); // Clear everything for next measurement
+    pinMode(analogInputToDigitalPin(_inPin-A0), OUTPUT); // Clear everything for next measurement
 #else
     pinMode(_inPin, OUTPUT);                // Clear everything for next measurement
 #endif
@@ -112,7 +112,7 @@ float Capacitor::Measure()
         delayMicroseconds(200);             // Charge for about 200us
 
 #if defined(__AVR_ATtinyX5__)
-        pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Stop charging
+        pinMode(analogInputToDigitalPin(_inPin-A0), INPUT);  // Stop charging
 #else
         pinMode(_inPin, INPUT);             // Stop charging
 #endif
@@ -130,14 +130,14 @@ float Capacitor::Measure()
             // Really big capacitor (>1uF)
             pinMode(_outPin, INPUT_PULLUP);
 #if defined(__AVR_ATtinyX5__)
-            pinMode(analogInputToDigitalPin(_inPin), OUTPUT); // Start charging again
+            pinMode(analogInputToDigitalPin(_inPin-A0), OUTPUT); // Start charging again
 #else
             pinMode(_inPin, OUTPUT);        // Start charging again
 #endif
             u3 = micros();
             delay(20);
 #if defined(__AVR_ATtinyX5__)
-            pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Stop charging
+            pinMode(analogInputToDigitalPin(_inPin-A0), INPUT);  // Stop charging
 #else
             pinMode(_inPin, INPUT);             // Stop charging
 #endif
@@ -151,13 +151,13 @@ float Capacitor::Measure()
             while (adcVal < _maxAdcValue - _maxAdcValue / 8)
             {
 #if defined(__AVR_ATtinyX5__)
-                pinMode(analogInputToDigitalPin(_inPin), INPUT_PULLUP);  // Discharge slowly to about 0.6V
+                pinMode(analogInputToDigitalPin(_inPin-A0), INPUT_PULLUP);  // Discharge slowly to about 0.6V
 #else
                 pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly to about 0.6V
 #endif
                 delay(5);
 #if defined(__AVR_ATtinyX5__)
-                pinMode(analogInputToDigitalPin(_inPin), INPUT);
+                pinMode(analogInputToDigitalPin(_inPin-A0), INPUT);
 #else
                 pinMode(_inPin, INPUT);
 #endif
@@ -167,13 +167,13 @@ float Capacitor::Measure()
         else
         {
 #if defined(__AVR_ATtinyX5__)
-            pinMode(analogInputToDigitalPin(_inPin), INPUT_PULLUP);  // Discharge slowly for a bit
+            pinMode(analogInputToDigitalPin(_inPin-A0), INPUT_PULLUP);  // Discharge slowly for a bit
 #else
             pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly for a bit
 #endif
             delay(1);
 #if defined(__AVR_ATtinyX5__)
-            pinMode(analogInputToDigitalPin(_inPin), INPUT);
+            pinMode(analogInputToDigitalPin(_inPin-A0), INPUT);
 #else
             pinMode(_inPin, INPUT);
 #endif
@@ -184,8 +184,8 @@ float Capacitor::Measure()
       
         digitalWrite(_outPin, LOW);           // Discharge remainder quickly
 #if defined(__AVR_ATtinyX5__)
-        digitalWrite(analogInputToDigitalPin(_inPin), LOW);
-        pinMode(analogInputToDigitalPin(_inPin), OUTPUT);
+        digitalWrite(analogInputToDigitalPin(_inPin-A0), LOW);
+        pinMode(analogInputToDigitalPin(_inPin-A0), OUTPUT);
 #else
         digitalWrite(_inPin, LOW);
         pinMode(_inPin, OUTPUT);
