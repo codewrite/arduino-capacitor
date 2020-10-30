@@ -65,23 +65,21 @@ unsigned int CapacitorLite::Measure()
 {
     long capacitance;
 
-    pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
-    digitalWrite(_outPin, HIGH);
 #if defined(__AVR_ATtinyX5__)
-    int val = 0;
-    switch(_inPin)
-	{
-		case 2: val = analogRead(1); break;
-		case 3: val = analogRead(3); break;
-		case 4: val = analogRead(2); break;
-		case 5: val = analogRead(0); break;
-		default: analogRead(_inPin);
-	}
+        pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Convert AnalogPin to Digital for ATTinyX5 chips
 #else
-	int val = analogRead(_inPin);
+        pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
 #endif
+    digitalWrite(_outPin, HIGH);
+
+	int val = analogRead(_inPin);
+
     digitalWrite(_outPin, LOW);
-    pinMode(_inPin, OUTPUT);                // Clear everything for next measurement
+#if defined(__AVR_ATtinyX5__)
+    pinMode(analogInputToDigitalPin(_inPin), OUTPUT);  // Convert AnalogPin to Digital for ATTinyX5 chips, Clear everything for next measurement
+#else
+    pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
+#endif
 
     // Calculate result
     capacitance = (long)val * _inCapToGnd / (max(_maxAdcValue - val, 1));

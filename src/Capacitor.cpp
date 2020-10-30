@@ -75,26 +75,21 @@ float Capacitor::Measure()
     float capacitance;
 	
 #if defined(__AVR_ATtinyX5__)
-    int tinyPin;
-    switch(_inPin)
-	{
-		case 2: tinyPin = 1; break;
-		case 3: tinyPin = 3; break;
-		case 4: tinyPin = 2; break;
-		case 5: tinyPin = 0; break;
-		default: tinyPin = _inPin;
-	}
+    pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Rising high edge on OUT_PIN
+#else
+    pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
 #endif
 
-    pinMode(_inPin, INPUT);                 // Rising high edge on OUT_PIN
     digitalWrite(_outPin, HIGH);
-#if defined(__AVR_ATtinyX5__)
-	int val = analogRead(tinyPin);
-#else
 	int val = analogRead(_inPin);
-#endif
+
     digitalWrite(_outPin, LOW);
+#if defined(__AVR_ATtinyX5__)
+    pinMode(analogInputToDigitalPin(_inPin), OUTPUT); // Clear everything for next measurement
+#else
     pinMode(_inPin, OUTPUT);                // Clear everything for next measurement
+#endif
+
 
     if (val < _maxAdcValue - _maxAdcValue / 42)
     {
@@ -116,16 +111,16 @@ float Capacitor::Measure()
         
         delayMicroseconds(200);             // Charge for about 200us
 
+#if defined(__AVR_ATtinyX5__)
+        pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Stop charging
+#else
         pinMode(_inPin, INPUT);             // Stop charging
+#endif
         unsigned long u2 = micros();        // Note: overflows approx every 70 mins
         digitalWrite(_outPin, HIGH);        // Pull both sides of capacitor up
         pinMode(_outPin, OUTPUT);
 
-#if defined(__AVR_ATtinyX5__)
-	    int adcVal = analogRead(tinyPin);    // Now read level capacitor has charged up to
-#else
 	    int adcVal = analogRead(_inPin);    // Now read level capacitor has charged up to
-#endif
         val = _maxAdcValue - adcVal;
 
         unsigned long u3 = 0;
@@ -134,47 +129,68 @@ float Capacitor::Measure()
         {
             // Really big capacitor (>1uF)
             pinMode(_outPin, INPUT_PULLUP);
+#if defined(__AVR_ATtinyX5__)
+            pinMode(analogInputToDigitalPin(_inPin), OUTPUT); // Start charging again
+#else
             pinMode(_inPin, OUTPUT);        // Start charging again
+#endif
             u3 = micros();
             delay(20);
-            pinMode(_inPin, INPUT);         // Stop charging
+#if defined(__AVR_ATtinyX5__)
+            pinMode(analogInputToDigitalPin(_inPin), INPUT);  // Stop charging
+#else
+            pinMode(_inPin, INPUT);             // Stop charging
+#endif
             u4 = micros();
             digitalWrite(_outPin, HIGH);    // Pull both sides of capacitor up
             pinMode(_outPin, OUTPUT);
-            
-#if defined(__AVR_ATtinyX5__)
-	        adcVal = analogRead(tinyPin);
-#else
+
 	        adcVal = analogRead(_inPin);
-#endif
             val = _maxAdcValue - adcVal;    // Measure level wrt Vcc (not Gnd)
 
             while (adcVal < _maxAdcValue - _maxAdcValue / 8)
             {
-                pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly to about 0.6V
-                delay(5);
-                pinMode(_inPin, INPUT);
 #if defined(__AVR_ATtinyX5__)
-	            adcVal = analogRead(tinyPin);
+                pinMode(analogInputToDigitalPin(_inPin), INPUT_PULLUP);  // Discharge slowly to about 0.6V
 #else
-	            adcVal = analogRead(_inPin);
+                pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly to about 0.6V
 #endif
+                delay(5);
+#if defined(__AVR_ATtinyX5__)
+                pinMode(analogInputToDigitalPin(_inPin), INPUT);
+#else
+                pinMode(_inPin, INPUT);
+#endif
+	            adcVal = analogRead(_inPin);
             }
         }
         else
         {
+#if defined(__AVR_ATtinyX5__)
+            pinMode(analogInputToDigitalPin(_inPin), INPUT_PULLUP);  // Discharge slowly for a bit
+#else
             pinMode(_inPin, INPUT_PULLUP);  // Discharge slowly for a bit
+#endif
             delay(1);
+#if defined(__AVR_ATtinyX5__)
+            pinMode(analogInputToDigitalPin(_inPin), INPUT);
+#else
             pinMode(_inPin, INPUT);
+#endif
         }
 
         // Work out the actual charge time
         unsigned long t = (u2 > u1 ? u2 - u1 : u1 - u2) + (u4 > u3 ? u4 - u3 : u3 - u4);
       
         digitalWrite(_outPin, LOW);           // Discharge remainder quickly
+#if defined(__AVR_ATtinyX5__)
+        digitalWrite(analogInputToDigitalPin(_inPin), LOW);
+        pinMode(analogInputToDigitalPin(_inPin), OUTPUT);
+#else
         digitalWrite(_inPin, LOW);
         pinMode(_inPin, OUTPUT);
-
+#endif
+        
         //Calculate result
         capacitance = -(float)t * 1000.0 / _rPullup
                         / log(1.0 - (float)val / (float)_maxAdcValue);
