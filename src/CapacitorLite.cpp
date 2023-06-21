@@ -10,17 +10,17 @@
 #include "CapacitorLite.h"
 
 #if defined(__SAM3X8E__)
-    #define STRAY_CAP (1750);
+    #define STRAY_CAP 1750
 #elif defined(__PIC32MX3XX__)
-    #define STRAY_CAP (1800);
+    #define STRAY_CAP 1800
 #elif defined(__AVR_ATmega168__)
-    #define STRAY_CAP (2800);
+    #define STRAY_CAP 2800
 #elif defined(__AVR_ATmega328P__)
-    #define STRAY_CAP (2630);
+    #define STRAY_CAP 2630
 #elif defined(__AVR_ATmega32U4__)
-    #define STRAY_CAP (3600);
+    #define STRAY_CAP 3600
 #else
-    #define STRAY_CAP (2448);
+    #define STRAY_CAP 2448
 #endif
 
 unsigned int CapacitorLite::_inCapToGnd = STRAY_CAP;      // in pF *100

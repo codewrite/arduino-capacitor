@@ -9,23 +9,23 @@
 #include "Capacitor.h"
 
 #if defined(__SAM3X8E__)
-    #define STRAY_CAP (17.50);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 17.50
+    #define R_PULLUP 34.80
 #elif defined(__PIC32MX3XX__)
-    #define STRAY_CAP (18.00);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 18.00
+    #define R_PULLUP 34.80
 #elif defined(__AVR_ATmega168__)
-    #define STRAY_CAP (28.00);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 28.00
+    #define R_PULLUP 34.80
 #elif defined(__AVR_ATmega328P__)
-    #define STRAY_CAP (26.30);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 26.30
+    #define R_PULLUP 34.80
 #elif defined(__AVR_ATmega32U4__)
-    #define STRAY_CAP (36.00);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 36.00
+    #define R_PULLUP 34.80
 #else
-    #define STRAY_CAP (24.48);
-    #define R_PULLUP (34.80);
+    #define STRAY_CAP 24.48
+    #define R_PULLUP 34.80
 #endif
 
 float Capacitor::_inCapToGnd = STRAY_CAP;      // in pF
